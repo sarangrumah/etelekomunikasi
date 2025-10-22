@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2023 Justin Hileman
+ * (c) 2012-2025 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -69,11 +69,11 @@ HELP
             $reflector = new ReflectionLanguageConstruct($value);
             $doc = $this->getManualDocById($value);
         } else {
-            list($target, $reflector) = $this->getTargetAndReflector($value);
+            list($target, $reflector) = $this->getTargetAndReflector($value, $output);
             $doc = $this->getManualDoc($reflector) ?: DocblockFormatter::format($reflector);
         }
 
-        $db = $this->getApplication()->getManualDb();
+        $db = $this->getShell()->getManualDb();
 
         if ($output instanceof ShellOutput) {
             $output->startPaging();
@@ -242,7 +242,7 @@ HELP
 
     private function getManualDocById($id)
     {
-        if ($db = $this->getApplication()->getManualDb()) {
+        if ($db = $this->getShell()->getManualDb()) {
             $result = $db->query(\sprintf('SELECT doc FROM php_manual WHERE id = %s', $db->quote($id)));
             if ($result !== false) {
                 return $result->fetchColumn(0);
